@@ -11,13 +11,15 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<36]
+  # maturin isn't availabe on s390x
+  skip: true  # [py<36 or s390x]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ compiler('rust') }}
+    - {{ compiler('rust') }}  # [not win]
+    - rust_win-64             # [win]
     - maturin
   host:
     - maturin
