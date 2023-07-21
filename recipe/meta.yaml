@@ -17,7 +17,8 @@ build:
 
 requirements:
   build:
-    - {{ compiler('c') }}
+    # The C compiler is required because of missing libgcc-ng on linux
+    - {{ compiler('c') }}  # [linux]
     - {{ compiler('rust') }}
     - maturin
   host:
