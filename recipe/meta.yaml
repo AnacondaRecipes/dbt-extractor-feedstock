@@ -1,7 +1,6 @@
 {% set name = "dbt-extractor" %}
 {% set version = "0.4.1" %}
 
-
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -11,15 +10,15 @@ source:
   sha256: 75b1c665699ec0f1ffce1ba3d776f7dfce802156f22e70a7b9c8f0b4d7e80f42
 
 build:
-  skip: true  # [py<36]
-  number: 1
-  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  # maturin isn't availabe on s390x
+  skip: true  # [py<36 or s390x or (win and rust_compiler == "rust-gnu")]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - {{ compiler('c') }}
+    # The C compiler is required because of missing libgcc-ng on linux
+    - {{ compiler('c') }}  # [linux]
     - {{ compiler('rust') }}
     - maturin
   host:
@@ -32,18 +31,22 @@ requirements:
 test:
   imports:
     - dbt_extractor
-  commands:
-    - pip check
   requires:
     - pip
+  commands:
+    - pip check
 
 about:
   home: https://pypi.org/project/dbt-extractor/
   dev_url: https://github.com/dbt-labs/dbt-extractor
-  # Check with upstream to package license file
+  doc_url: https://github.com/dbt-labs/dbt-extractor
   license_file: LICENSE
   license: Apache-2.0
+  license_family: Apache
   summary: Jinja value templates for dbt model files
+  description: |
+    It's a tool that processes the most common jinja value templates in dbt model files. 
+    The tool depends on tree-sitter and the tree-sitter-jinja2 library.
 
 extra:
   recipe-maintainers:
