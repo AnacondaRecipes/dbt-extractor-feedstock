@@ -18,7 +18,7 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ compiler('rust') }}  # [not win]
+    - {{ compiler('rust') }}
     - maturin
   host:
     - maturin
