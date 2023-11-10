@@ -21,6 +21,7 @@ requirements:
     # The C compiler is required because of missing libgcc-ng on linux
     - {{ compiler('c') }}  # [linux]
     - {{ compiler('rust') }}
+    - git  # [not win]
   host:
     - maturin
     - pip
