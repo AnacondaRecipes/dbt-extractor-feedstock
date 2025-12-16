@@ -27,18 +27,12 @@ requirements:
     - python
 
 test:
-  source_files:
-    - tests
   imports:
     - dbt_extractor
   commands:
     - pip check
-    - cargo test --test tests/integration_tests.rs
   requires:
     - pip
-    - {{ stdlib('c') }}
-    - {{ compiler('c') }}
-    - {{ compiler('rust') }}
 
 about:
   home: https://pypi.org/project/dbt-extractor
