@@ -1,31 +1,26 @@
 {% set name = "dbt-extractor" %}
-{% set version = "0.5.0" %}
+{% set version = "0.6.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  git_url: https://github.com/dbt-labs/{{ name }}.git
-  # Based on https://github.com/dbt-labs/dbt-extractor/actions/runs/5650153364.
-  ref: 83f0d93d4d5537de3960ac5659f72f430f5d7d5d
-  sha256: 75b1c665699ec0f1ffce1ba3d776f7dfce802156f22e70a7b9c8f0b4d7e80f42
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: d6cf08ec793b8bc2bd6e260ef818230ae68a4f71436fa489f08d7db1a52e2ffe
 
 build:
-  number: 3
-  skip: true  # [py<36 or (win and rust_compiler == "rust-gnu")]
+  number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  missing_dso_whitelist:
-    - '$RPATH/ld64.so.1'  # [s390x]
+  skip: true  # [py<39]
 
 requirements:
   build:
-    # The C compiler is required because of missing libgcc-ng on linux
-    - {{ compiler('c') }}  # [linux]
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
     - {{ compiler('rust') }}
-    - git  # [not win]
   host:
-    - maturin
+    - maturin >=1.1
     - pip
     - python
   run:
@@ -34,13 +29,13 @@ requirements:
 test:
   imports:
     - dbt_extractor
-  requires:
-    - pip
   commands:
     - pip check
+  requires:
+    - pip
 
 about:
-  home: https://pypi.org/project/dbt-extractor/
+  home: https://pypi.org/project/dbt-extractor
   dev_url: https://github.com/dbt-labs/dbt-extractor
   doc_url: https://github.com/dbt-labs/dbt-extractor
   license_file: LICENSE
